@@ -12,7 +12,7 @@ public class RequestHelper {
         return request;
     }
 
-    public static GetRequest addIntegerToGetRequestIfNotEmpty(String name, Integer value,
+    public static GetRequest addIntegerToGetRequestIfNotNull(String name, Integer value,
             GetRequest request) {
         if (value != null) {
             request.queryString(name, value);

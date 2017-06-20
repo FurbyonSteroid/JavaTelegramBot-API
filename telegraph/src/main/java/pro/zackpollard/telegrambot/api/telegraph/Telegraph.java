@@ -51,10 +51,12 @@ public class Telegraph {
                 .queryString("return_content", return_content).asString().getBody(), Page.class);
     }
 
-    public static PageList getPageList(String access_token, int offset, int limit) throws UnirestException {
-        return gson.fromJson(
-                Unirest.get(API_URL + "getPageList").queryString("access_token", access_token)
-                        .queryString("offset", offset).queryString("limit", limit).asString().getBody(),
-                PageList.class);
+    public static PageList getPageList(String access_token, Integer offset, Integer limit)
+            throws UnirestException {
+        GetRequest request = Unirest.get(API_URL + "getPageList");
+        request.queryString("access_token", access_token);
+        request = RequestHelper.addIntegerToGetRequestIfNotNull("offset", offset, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotNull("limit", limit, request);
+        return gson.fromJson(request.asString().getBody(), PageList.class);
     }
 }

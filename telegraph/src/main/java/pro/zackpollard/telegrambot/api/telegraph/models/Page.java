@@ -29,10 +29,10 @@ public class Page {
 
     public PageViews getViews(int year, int month, int day, int hour) throws UnirestException {
         GetRequest request = Unirest.get(Telegraph.API_URL + "getViews/" + path);
-        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("year", year, request);
-        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("month", month, request);
-        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("day", day, request);
-        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("hour", hour, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotNull("year", year, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotNull("month", month, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotNull("day", day, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotNull("hour", hour, request);
         return gson.fromJson(request.asString().getBody(), PageViews.class);
     }
 
