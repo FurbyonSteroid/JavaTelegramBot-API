@@ -11,6 +11,7 @@ import pro.zackpollard.telegrambot.api.telegraph.models.nodes.Node;
 import java.util.List;
 
 public class Page {
+    private Gson gson = new Gson();
     private String access_token;
     private String path;
     private String url;
@@ -20,11 +21,36 @@ public class Page {
     private String author_url;
     private String image_url;
     private List<Node> content;
-    private boolean return_content;
     private int views;
     private boolean can_edit;
 
     private Page() {
+    }
+
+    public PageViews getViews(int year, int month, int day, int hour) throws UnirestException {
+        GetRequest request = Unirest.get(Telegraph.API_URL + "getViews/" + path);
+        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("year", year, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("month", month, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("day", day, request);
+        request = RequestHelper.addIntegerToGetRequestIfNotEmpty("hour", hour, request);
+        return gson.fromJson(request.asString().getBody(), PageViews.class);
+    }
+
+    public Page editPage(String title, List<Node> content, String author_name, String author_url,
+            boolean return_content) throws UnirestException {
+        this.title = title;
+        this.content = content;
+        this.author_name = author_name;
+        this.author_url = author_url;
+        GetRequest request = Unirest.get(Telegraph.API_URL + "editPage/" + path);
+        request.queryString("access_token", access_token);
+        request.queryString("title", title);
+        // TODO JSON parsing
+        request.queryString("content", content);
+        request.queryString("return_content", return_content);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("author_name", author_name, request);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("author_url", author_url, request);
+        return gson.fromJson(request.asString().getBody(), Page.class);
     }
 
     public String getPath() {
@@ -41,6 +67,10 @@ public class Page {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getAccess_token() {
+        return access_token;
     }
 
     public String getAuthor_name() {
@@ -108,8 +138,8 @@ public class Page {
             request.queryString("title", title);
             request.queryString("content", content);
             request.queryString("return_content", return_content);
-            RequestHelper.addToGetRequestIfNotEmpty("author_name", author_name, request);
-            RequestHelper.addToGetRequestIfNotEmpty("author_url", author_url, request);
+            RequestHelper.addStringToGetRequestIfNotEmpty("author_name", author_name, request);
+            RequestHelper.addStringToGetRequestIfNotEmpty("author_url", author_url, request);
             return gson.fromJson(request.asString().getBody(), Page.class);
         }
     }

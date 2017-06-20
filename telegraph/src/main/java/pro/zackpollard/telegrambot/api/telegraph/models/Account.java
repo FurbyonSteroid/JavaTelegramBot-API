@@ -21,9 +21,9 @@ public class Account {
             throws UnirestException {
         GetRequest request = Unirest.get(Telegraph.API_URL + "editAccountInfo");
         request.queryString("access_token", access_token);
-        request = RequestHelper.addToGetRequestIfNotEmpty("short_name", short_name, request);
-        request = RequestHelper.addToGetRequestIfNotEmpty("author_name", author_name, request);
-        request = RequestHelper.addToGetRequestIfNotEmpty("auth_url", auth_url, request);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("short_name", short_name, request);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("author_name", author_name, request);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("auth_url", auth_url, request);
         Account account = gson.fromJson(request.asString().getBody(), Account.class);
         this.short_name = account.getShort_name();
         this.author_name = account.getAuthor_name();

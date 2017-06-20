@@ -7,6 +7,8 @@ import com.mashape.unirest.request.GetRequest;
 import pro.zackpollard.telegrambot.api.telegraph.helper.RequestHelper;
 import pro.zackpollard.telegrambot.api.telegraph.models.Account;
 import pro.zackpollard.telegrambot.api.telegraph.models.Exceptions.MissingRequiredInformationException;
+import pro.zackpollard.telegrambot.api.telegraph.models.Page;
+import pro.zackpollard.telegrambot.api.telegraph.models.PageList;
 
 import java.util.Arrays;
 
@@ -32,8 +34,8 @@ public class Telegraph {
             throw new MissingRequiredInformationException("\"short_name\" must be set");
         }
         GetRequest request = Unirest.get(API_URL + "createAccount");
-        request = RequestHelper.addToGetRequestIfNotEmpty("author_name", author_name, request);
-        request = RequestHelper.addToGetRequestIfNotEmpty("author_url", author_url, request);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("author_name", author_name, request);
+        request = RequestHelper.addStringToGetRequestIfNotEmpty("author_url", author_url, request);
         String result = "";
         try {
             result = request.asString().getBody();
@@ -42,5 +44,17 @@ public class Telegraph {
         }
         Account account = gson.fromJson(result, Account.class);
         return account;
+    }
+
+    public static Page getPage(String path, boolean return_content) throws UnirestException {
+        return gson.fromJson(Unirest.get(API_URL + "getPage/" + path)
+                .queryString("return_content", return_content).asString().getBody(), Page.class);
+    }
+
+    public static PageList getPageList(String access_token, int offset, int limit) throws UnirestException {
+        return gson.fromJson(
+                Unirest.get(API_URL + "getPageList").queryString("access_token", access_token)
+                        .queryString("offset", offset).queryString("limit", limit).asString().getBody(),
+                PageList.class);
     }
 }

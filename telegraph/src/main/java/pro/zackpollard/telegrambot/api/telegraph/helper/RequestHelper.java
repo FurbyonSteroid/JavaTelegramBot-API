@@ -4,8 +4,17 @@ import com.mashape.unirest.request.GetRequest;
 
 public class RequestHelper {
 
-    public static GetRequest addToGetRequestIfNotEmpty(String name, String value, GetRequest request) {
+    public static GetRequest addStringToGetRequestIfNotEmpty(String name, String value,
+            GetRequest request) {
         if (!value.isEmpty() && value != null) {
+            request.queryString(name, value);
+        }
+        return request;
+    }
+
+    public static GetRequest addIntegerToGetRequestIfNotEmpty(String name, Integer value,
+            GetRequest request) {
+        if (value != null) {
             request.queryString(name, value);
         }
         return request;
